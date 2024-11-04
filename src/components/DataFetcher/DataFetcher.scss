@@ -1,0 +1,20 @@
+// _variables.scss
+$breakpoint-small: 300px;
+$breakpoint-medium: 500px;
+$breakpoint-large: 768px;
+$breakpoint-xlarge: 1024px;
+
+.dataFetcher__container {
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.dataFetcher__btn--dark {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.dataFetcher__btn--light {
+  background-color: #000;
+  color: #fff;
+}

@@ -1,0 +1,71 @@
+.list__container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: cadetblue;
+  padding: 30px;
+  border-radius: 8px;
+}
+
+.list__element {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgb(255, 255, 255);
+  gap: 200px;
+}
+
+.list__element span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list__cta_container {
+  display: flex;
+  gap: 12px;
+}
+
+.input__container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.input__container input {
+  flex: 1;
+  padding: 10px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 8px;
+  background-color: rgb(253, 165, 156);
+  color: white;
+  font-weight: bold;
+}
+
+.input__edit {
+  border: none;
+  border-radius: 8px;
+  background-color: rgb(253, 165, 156);
+  color: #394848;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.input__container button {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  background-color: rgb(255, 255, 255);
+  color: cadetblue;
+  border: 1px solid cadetblue;
+}
+
+.input__edit_cta-container {
+  display: flex;
+  gap: 8px;
+}

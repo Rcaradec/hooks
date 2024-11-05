@@ -29,5 +29,5 @@ export type Todo = {
 
 export type AlertContentType = {
   severity: "error" | "warning" | "info" | "success";
-  message: string;
+  message: string | undefined;
 };

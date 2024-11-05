@@ -1,79 +1,45 @@
-// import { useReducer } from "react";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef } from "react";
 import "./TodoList.scss";
 import { Alert, Snackbar } from "@mui/material";
-import { AlertContentType, initialTodos, Todo } from "../../data/initialTodos";
+import { useReducer } from "react";
+import { initialState, todoReducer } from "../../reducers/todoReducer";
 
 const TodoList = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const [todos, setTodos] = useState<Todo[]>(initialTodos);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingText, setEditingText] = useState<string>("");
-  const [isAlertVisible, setIsAlertVisible] = useState<boolean | undefined>(
-    false
-  );
-  const [alertContent, setAlertContent] = useState<AlertContentType | null>(
-    null
-  );
-
-  const showAlert = (
-    severity: "success" | "error" | "info",
-    message: string
-  ) => {
-    setAlertContent({ severity, message });
-    setIsAlertVisible(true);
-  };
+  const editInputRef = useRef<HTMLInputElement | null>(null);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     let target = inputRef?.current?.value;
 
     if (!target) {
-      showAlert("error", "no todo to be added!");
-      setIsAlertVisible(true);
+      dispatch({ type: "EMPTY_ADD_TODO" });
     } else {
-      setTodos([
-        ...todos,
-        {
-          id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
-          text: target,
-          completed: false,
-        },
-      ]);
+      dispatch({ type: "ADD_TODO", text: target });
       target = "";
-      showAlert("success", "Todo added!");
     }
   };
-  const handleEditTodo = (id: number, text: string) => {
-    console.log("text:", text);
-    setEditingId(id);
-    setEditingText(text);
-  };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditingText("null");
+  const handleEditTodo = (id: number, text: string) => {
+    dispatch({ type: "START_EDIT_TODO", id, text });
+    if (editInputRef.current) {
+      editInputRef.current.focus();
+    }
   };
 
   const handleSaveEdit = (id: number) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, text: editingText } : todo
-      )
-    );
-    showAlert("info", "Todo edited!");
-    setEditingId(null);
-    setEditingText("");
+    if (state.editingText !== undefined) {
+      dispatch({ type: "SAVE_EDIT_TODO", id, text: state.editingText });
+    }
   };
 
   const handleDeleteTodo = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-    showAlert("success", "Todo deleted!");
+    dispatch({ type: "DELETE_TODO", id });
   };
 
   const handleSnackBarClose = () => {
-    setIsAlertVisible(false);
+    dispatch({ type: "HIDE_ALERT" });
   };
 
   return (
@@ -91,21 +57,31 @@ const TodoList = () => {
           </form>
         </div>
         <ul className="list__container">
-          {todos.map((todo) => (
+          {state.todos.map((todo) => (
             <li key={todo.id} className="list__element">
-              {editingId === todo.id ? (
+              {state.editingId === todo.id ? (
                 <>
                   <input
                     className="input__edit"
                     type="text"
-                    value={editingText}
-                    onChange={(e) => setEditingText(e.target.value)}
+                    value={state.editingText}
+                    ref={editInputRef}
+                    onChange={(e) =>
+                      dispatch({
+                        type: "UPDATE_EDIT_TEXT",
+                        text: e.target.value,
+                      })
+                    }
                   />
                   <div className="input__edit_cta-container">
                     <button onClick={() => handleSaveEdit(todo.id)}>
                       Save
                     </button>
-                    <button onClick={handleCancelEdit}>Cancel</button>
+                    <button
+                      onClick={() => dispatch({ type: "CANCEL_EDIT_TODO" })}
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </>
               ) : (
@@ -132,19 +108,18 @@ const TodoList = () => {
         </ul>
       </div>
       <Snackbar
-        open={isAlertVisible}
+        open={state.isAlertVisible}
         autoHideDuration={4000}
-        onClose={handleSnackBarClose}
-        message="Todo Added!"
+        onClose={() => dispatch({ type: "HIDE_ALERT" })}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert
           onClose={handleSnackBarClose}
-          severity={alertContent?.severity}
+          severity={state.alertContent?.severity}
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {alertContent?.message}
+          {state.alertContent?.message}
         </Alert>
       </Snackbar>
     </>

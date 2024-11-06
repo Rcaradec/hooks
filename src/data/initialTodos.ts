@@ -4,9 +4,9 @@ export type TodoCategory = {
 };
 
 export type Todo = {
-  id: number;
+  id?: number;
   text: string;
-  completed: boolean;
+  completed?: boolean;
   category: "development" | "job hunting";
 };
 

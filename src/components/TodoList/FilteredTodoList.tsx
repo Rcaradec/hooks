@@ -1,5 +1,3 @@
-import { useMemo, useState } from "react";
-
 import {
   Button,
   Box,
@@ -11,33 +9,27 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  SelectChangeEvent,
   Typography,
+  SelectChangeEvent,
 } from "@mui/material";
-import React from "react";
-import {
-  initialTodos,
-  todoCategories,
-  TodoCategory,
-  Todo,
-} from "../../data/initialTodos";
+import { todoCategories, Todo, TodoCategory } from "../../data/initialTodos";
+import { Link } from "react-router-dom";
 
-const FilteredTodoList = () => {
-  const [selectedCategory, setSelectedCategory] = useState<
-    TodoCategory | undefined
-  >(undefined);
-  const handleChange = (e: SelectChangeEvent<string>) => {
-    const selectedValue = e.target.value;
-    const category = todoCategories.find((cat) => cat.name === selectedValue);
-    setSelectedCategory(category);
-  };
+type Props = {
+  handleChange: (e: SelectChangeEvent<string>) => void;
+  cachedVisibleTodos: Todo[];
+  selectedCategory: TodoCategory | undefined;
+  setSelectedCategory: (category: TodoCategory | undefined) => void;
+  handleTodoElem: (todo: Todo) => void;
+};
 
-  const cachedVisibleTodos: Todo[] = useMemo(() => {
-    return selectedCategory
-      ? initialTodos.filter((todos) => todos.category === selectedCategory.name)
-      : initialTodos;
-  }, [selectedCategory]);
-
+const FilteredTodoList = ({
+  handleChange,
+  cachedVisibleTodos,
+  selectedCategory,
+  setSelectedCategory,
+  handleTodoElem,
+}: Props) => {
   return (
     <>
       <Box
@@ -69,7 +61,11 @@ const FilteredTodoList = () => {
           {cachedVisibleTodos.map((todo) => (
             <Grid item xs={12} sm={6} key={todo.id}>
               <List>
-                <ListItem>
+                <ListItem
+                  component={Link}
+                  to={`/todo/${todo.id}`}
+                  onClick={() => handleTodoElem(todo)}
+                >
                   <ListItemText primary={todo.text} secondary={todo.category} />
                 </ListItem>
               </List>
@@ -79,6 +75,7 @@ const FilteredTodoList = () => {
         <Button
           variant="outlined"
           onClick={() => setSelectedCategory(undefined)}
+          sx={{ marginTop: 5 }}
         >
           Reset Categories
         </Button>

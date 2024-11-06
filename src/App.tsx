@@ -1,12 +1,12 @@
 import "./App.css";
-import TodoList from "./components/TodoList/TodoList";
+import FilteredTodoList from "./components/TodoList/FilteredTodoList";
 import { ThemeProvider } from "./utils/ThemeContext";
 
 function App() {
   return (
     <>
       <ThemeProvider>
-        <TodoList />
+        <FilteredTodoList />
       </ThemeProvider>
     </>
   );
